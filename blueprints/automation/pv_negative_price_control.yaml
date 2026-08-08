@@ -13,7 +13,7 @@ blueprint:
     - Bewaakt de temperatuur van de PV-schakelaar.
   domain: automation
   author: "Dennis / dkwolf1"
-  source_url: "https://github.com/dkwolf1/home-assistant-pv-blueprint/blob/main/blueprints/automation/pv_negative_price_control.yaml"
+  source_url: "https://github.com/dkwolf1/PV-blueprint/blob/main/blueprints/automation/pv_negative_price_control.yaml"
 
   homeassistant:
     min_version: "2024.6.0"
