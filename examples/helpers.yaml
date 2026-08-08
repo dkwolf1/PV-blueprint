@@ -1,0 +1,36 @@
+# Voorbeeldhelpers
+#
+# Alleen gebruiken wanneer deze helpers nog niet bestaan.
+# Plaats ze in configuration.yaml of een daarvoor gebruikte include/package.
+
+input_boolean:
+  pv_automatisch_afschakelen:
+    name: PV automatisch afschakelen
+    icon: mdi:solar-power
+
+  pv_handmatig_geblokkeerd:
+    name: PV handmatig geblokkeerd
+    icon: mdi:hand-back-right
+
+input_number:
+  pv_negatieve_prijs_drempel:
+    name: PV negatieve prijs drempel
+    min: -1
+    max: 1
+    step: 0.001
+    unit_of_measurement: "€/kWh"
+    mode: box
+
+  pv_minimale_schakeltijd_minuten:
+    name: PV minimale schakeltijd
+    min: 0
+    max: 120
+    step: 1
+    unit_of_measurement: "min"
+    mode: box
+
+input_datetime:
+  pv_laatst_geschakeld:
+    name: PV laatst geschakeld
+    has_date: true
+    has_time: true

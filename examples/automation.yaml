@@ -1,0 +1,23 @@
+# Dit bestand is alleen documentatie.
+# Maak de automation bij voorkeur via de Home Assistant UI nadat de blueprint
+# is geïmporteerd.
+
+alias: PV automatische prijsregeling
+use_blueprint:
+  path: dkwolf1/pv_negative_price_control.yaml
+  input:
+    price_sensor: sensor.zonneplan_current_electricity_tariff
+    pv_switch: switch.shelly_pro_1
+    inverted_switch: true
+    automatic_enabled: input_boolean.pv_automatisch_afschakelen
+    manual_block: input_boolean.pv_handmatig_geblokkeerd
+    price_threshold: input_number.pv_negatieve_prijs_drempel
+    last_switched: input_datetime.pv_laatst_geschakeld
+    minimum_switch_time: input_number.pv_minimale_schakeltijd_minuten
+    startup_delay:
+      minutes: 2
+    temperature_sensor: sensor.shellypro1_a4f00fcb3cd0_temperatuur
+    maximum_temperature: 55
+    notify_service_1: notify.mobile_app_dennis
+    notify_service_2: notify.mobile_app_minke
+    persistent_fault_notification: true
