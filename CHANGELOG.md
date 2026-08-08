@@ -4,6 +4,8 @@
 
 Initial release.
 
+- Improved Inverted selector wording and explanation.
+
 - Configurable electricity price sensor.
 - Configurable cutoff threshold.
 - Support for inverted PV switching.

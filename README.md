@@ -1,4 +1,4 @@
-# Home Assistant PV – negatieve stroomprijs regeling
+# PV-blueprint – negatieve stroomprijs regeling
 
 Een Home Assistant automation blueprint voor het automatisch afschakelen en
 herinschakelen van zonnepanelen op basis van de actuele elektriciteitsprijs.
@@ -18,12 +18,12 @@ herinschakelen van zonnepanelen op basis van de actuele elektriciteitsprijs.
 
 ## Importeren
 
-[![Open your Home Assistant instance and show the blueprint import dialog with this blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdkwolf1%2Fhome-assistant-pv-blueprint%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fpv_negative_price_control.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with this blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fdkwolf1%2FPV-blueprint%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fpv_negative_price_control.yaml)
 
 Of importeer handmatig via:
 
 ```text
-https://github.com/dkwolf1/home-assistant-pv-blueprint/blob/main/blueprints/automation/pv_negative_price_control.yaml
+https://github.com/dkwolf1/PV-blueprint/blob/main/blueprints/automation/pv_negative_price_control.yaml
 ```
 
 Home Assistant kan blueprints rechtstreeks vanaf GitHub importeren.
@@ -58,6 +58,15 @@ De blueprint verwacht:
 | Temperatuurgrens | `55 °C` |
 | Notify 1 | `notify.mobile_app_dennis` |
 | Notify 2 | `notify.mobile_app_minke` |
+
+## Inverted
+
+De blueprint bevat een schakelaar **Inverted**.
+
+- **Inverted AAN:** switch AAN = PV UIT, switch UIT = PV AAN.
+- **Inverted UIT:** switch AAN = PV AAN, switch UIT = PV UIT.
+
+Gebruik **Inverted AAN** wanneer een relais/Shelly de PV-installatie afschakelt zodra de switch wordt bekrachtigd.
 
 ## Schakellogica
 

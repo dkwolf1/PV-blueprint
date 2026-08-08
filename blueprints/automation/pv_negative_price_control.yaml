@@ -40,9 +40,13 @@ blueprint:
                 domain: switch
 
         inverted_switch:
-          name: "Geïnverteerde schakellogica"
+          name: "Inverted"
           description: >
-            Ingeschakeld betekent: switch AAN = PV UIT.
+            Zet deze knop AAN wanneer de gebruikte switch omgekeerd werkt:
+            switch AAN = PV UIT en switch UIT = PV AAN.
+
+            Zet deze knop UIT bij normale schakellogica:
+            switch AAN = PV AAN en switch UIT = PV UIT.
           default: true
           selector:
             boolean:
