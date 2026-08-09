@@ -18,6 +18,6 @@ use_blueprint:
       minutes: 2
     temperature_sensor: sensor.shellypro1_a4f00fcb3cd0_temperatuur
     maximum_temperature: 55
-    notify_service_1: notify.mobile_app_dennis
-    notify_service_2: notify.mobile_app_minke
+    notify_service_1: notify.mobile_app
+    notify_service_2: notify.mobile_app
     persistent_fault_notification: true
