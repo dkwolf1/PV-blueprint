@@ -56,8 +56,8 @@ De blueprint verwacht:
 | Minimale inschakeltijd | `input_number.pv_minimale_schakeltijd_minuten` |
 | Temperatuursensor | `sensor.shellypro1_a4f00fcb3cd0_temperatuur` |
 | Temperatuurgrens | `55 °C` |
-| Notify 1 | `notify.mobile_app_dennis` |
-| Notify 2 | `notify.mobile_app_minke` |
+| Notify 1 | `notify.mobile_app` |
+| Notify 2 | `notify.mobile_app` |
 
 ## Inverted
 
