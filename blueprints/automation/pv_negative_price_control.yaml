@@ -145,14 +145,14 @@ blueprint:
       input:
         notify_service_1:
           name: "Notify-service 1"
-          description: "Bijvoorbeeld notify.mobile_app_dennis"
+          description: "Bijvoorbeeld notify.mobile_app"
           default: ""
           selector:
             text:
 
         notify_service_2:
           name: "Notify-service 2"
-          description: "Bijvoorbeeld notify.mobile_app_minke"
+          description: "Bijvoorbeeld notify.mobile_app"
           default: ""
           selector:
             text:
