@@ -8,7 +8,7 @@ herinschakelen van zonnepanelen op basis van de actuele elektriciteitsprijs.
 - **Prijs ≤ ingestelde drempel:** PV uit.
 - **Prijs > ingestelde drempel:** PV aan.
 - Ondersteunt een **geïnverteerde schakelaar** (`switch ON = PV UIT`).
-- Minimale schakeltijd geldt alleen voordat PV wordt uitgeschakeld.
+- Minimale schakeltijd geldt vóór elke automatische uitschakeling, ook via watchdog of herstart.
 - Bij herstel van de prijs wordt PV direct weer ingeschakeld.
 - Watchdog controleert iedere 5 minuten de gewenste en werkelijke toestand.
 - Controle na een externe wijziging van de PV-schakelaar.

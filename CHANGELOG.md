@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 - 2026-09-03
+
+- Enforce the configured minimum PV on-time for shutdowns initiated by the watchdog or Home Assistant startup recovery.
+- Recheck price validity, threshold, automatic control, manual block and switch state after the delay.
+- Keep re-enabling PV immediate when the price rises above the threshold.
+
 ## 1.0.0 - 2026-08-08
 
 Initial release.

@@ -7,7 +7,7 @@ blueprint:
     - Prijs <= ingestelde drempel: PV UIT.
     - Prijs > ingestelde drempel: PV AAN.
     - Ondersteunt geïnverteerde schakellogica.
-    - Minimale schakeltijd geldt alleen voor uitschakelen.
+    - Minimale schakeltijd geldt voor elke automatische uitschakeling.
     - Herstelt een foutieve toestand via watchdog.
     - Controleert de toestand na een Home Assistant-herstart.
     - Bewaakt de temperatuur van de PV-schakelaar.
@@ -410,6 +410,12 @@ actions:
                 {% else %}
                   {% if inverted_switch %}off{% else %}on{% endif %}
                 {% endif %}
+              startup_should_be_off: >
+                {{
+                  states(price_sensor) | float(0)
+                  <=
+                  states(price_threshold) | float(0)
+                }}
 
           - condition: template
             value_template: "{{ startup_price_valid }}"
@@ -424,8 +430,66 @@ actions:
               - condition: template
                 value_template: "{{ states(pv_switch) != desired_switch_state }}"
             then:
+              - variables:
+                  remaining_seconds: >
+                    {% if startup_should_be_off %}
+                      {% set laatste = states(last_switched) %}
+                      {% set minimum = states(minimum_switch_time) | float(0) * 60 %}
+                      {% if laatste in ['unknown', 'unavailable', 'none', ''] %}
+                        0
+                      {% else %}
+                        {% set verstreken = as_timestamp(now()) - as_timestamp(laatste, 0) %}
+                        {{ [minimum - verstreken, 0] | max }}
+                      {% endif %}
+                    {% else %}
+                      0
+                    {% endif %}
+
+              - if:
+                  - condition: template
+                    value_template: "{{ remaining_seconds | float(0) > 0 }}"
+                then:
+                  - delay:
+                      seconds: "{{ remaining_seconds | int(0) }}"
+
+              # Recheck every condition after a possible minimum-time delay.
+              - variables:
+                  startup_price_still_valid: >
+                    {{
+                      states(price_sensor) not in
+                      ['unknown', 'unavailable', 'none', '']
+                      and is_number(states(price_sensor))
+                    }}
+                  desired_switch_state_after_wait: >
+                    {% set moet_uit =
+                      states(price_sensor) | float(0)
+                      <=
+                      states(price_threshold) | float(0)
+                    %}
+                    {% if moet_uit %}
+                      {% if inverted_switch %}on{% else %}off{% endif %}
+                    {% else %}
+                      {% if inverted_switch %}off{% else %}on{% endif %}
+                    {% endif %}
+
+              - condition: template
+                value_template: "{{ startup_price_still_valid }}"
+
+              - condition: template
+                value_template: "{{ is_state(automatic_enabled, 'on') }}"
+
+              - condition: template
+                value_template: "{{ is_state(manual_block, 'off') }}"
+
+              - condition: template
+                value_template: >
+                  {{
+                    states(pv_switch) in ['on', 'off']
+                    and states(pv_switch) != desired_switch_state_after_wait
+                  }}
+
               - action: >
-                  {% if desired_switch_state == 'on' %}
+                  {% if desired_switch_state_after_wait == 'on' %}
                     switch.turn_on
                   {% else %}
                     switch.turn_off
@@ -462,8 +526,6 @@ actions:
                   ['unknown', 'unavailable', 'none', '']
                   and is_number(states(price_sensor))
                 }}
-              watchdog_price: "{{ states(price_sensor) | float(0) }}"
-              watchdog_threshold: "{{ states(price_threshold) | float(0) }}"
               watchdog_should_be_off: >
                 {{
                   states(price_sensor) | float(0)
@@ -499,12 +561,78 @@ actions:
               }}
 
           - variables:
+              remaining_seconds: >
+                {% if watchdog_should_be_off %}
+                  {% set laatste = states(last_switched) %}
+                  {% set minimum = states(minimum_switch_time) | float(0) * 60 %}
+                  {% if laatste in ['unknown', 'unavailable', 'none', ''] %}
+                    0
+                  {% else %}
+                    {% set verstreken = as_timestamp(now()) - as_timestamp(laatste, 0) %}
+                    {{ [minimum - verstreken, 0] | max }}
+                  {% endif %}
+                {% else %}
+                  0
+                {% endif %}
+
+          - if:
+              - condition: template
+                value_template: "{{ remaining_seconds | float(0) > 0 }}"
+            then:
+              - delay:
+                  seconds: "{{ remaining_seconds | int(0) }}"
+
+          # Recheck every condition after a possible minimum-time delay.
+          - variables:
+              watchdog_price_still_valid: >
+                {{
+                  states(price_sensor) not in
+                  ['unknown', 'unavailable', 'none', '']
+                  and is_number(states(price_sensor))
+                }}
+              watchdog_price_after_wait: "{{ states(price_sensor) | float(0) }}"
+              watchdog_threshold_after_wait: "{{ states(price_threshold) | float(0) }}"
+              watchdog_should_be_off_after_wait: >
+                {{
+                  states(price_sensor) | float(0)
+                  <=
+                  states(price_threshold) | float(0)
+                }}
+              expected_switch_state_after_wait: >
+                {% set moet_uit =
+                  states(price_sensor) | float(0)
+                  <=
+                  states(price_threshold) | float(0)
+                %}
+                {% if moet_uit %}
+                  {% if inverted_switch %}on{% else %}off{% endif %}
+                {% else %}
+                  {% if inverted_switch %}off{% else %}on{% endif %}
+                {% endif %}
+
+          - condition: template
+            value_template: "{{ watchdog_price_still_valid }}"
+
+          - condition: template
+            value_template: "{{ is_state(automatic_enabled, 'on') }}"
+
+          - condition: template
+            value_template: "{{ is_state(manual_block, 'off') }}"
+
+          - condition: template
+            value_template: >
+              {{
+                states(pv_switch) in ['on', 'off']
+                and states(pv_switch) != expected_switch_state_after_wait
+              }}
+
+          - variables:
               old_switch_state: "{{ states(pv_switch) }}"
               expected_pv_state: >
-                {% if watchdog_should_be_off %}UIT{% else %}AAN{% endif %}
+                {% if watchdog_should_be_off_after_wait %}UIT{% else %}AAN{% endif %}
 
           - action: >
-              {% if expected_switch_state == 'on' %}
+              {% if expected_switch_state_after_wait == 'on' %}
                 switch.turn_on
               {% else %}
                 switch.turn_off
@@ -522,11 +650,11 @@ actions:
               watchdog_title: "⚠️ PV-toestand automatisch hersteld"
               watchdog_message: >
                 De PV-installatie stond niet in de verwachte toestand en is automatisch gecorrigeerd.
-                Stroomprijs: {{ watchdog_price | round(4) }} €/kWh.
-                Afschakeldrempel: {{ watchdog_threshold | round(4) }} €/kWh.
+                Stroomprijs: {{ watchdog_price_after_wait | round(4) }} €/kWh.
+                Afschakeldrempel: {{ watchdog_threshold_after_wait | round(4) }} €/kWh.
                 Verwachte PV-toestand: {{ expected_pv_state }}.
                 Shelly was: {{ old_switch_state }}.
-                Shelly is gecorrigeerd naar: {{ expected_switch_state }}.
+                Shelly is gecorrigeerd naar: {{ expected_switch_state_after_wait }}.
 
           - repeat:
               for_each:
