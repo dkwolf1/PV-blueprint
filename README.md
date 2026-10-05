@@ -28,7 +28,25 @@ https://github.com/dkwolf1/PV-blueprint/blob/main/blueprints/automation/pv_negat
 
 Home Assistant kan blueprints rechtstreeks vanaf GitHub importeren.
 
+## Dashboardvoorbeelden
+
+De drie aangeleverde views staan in [`dashboards/`](dashboards/). Lees eerst de
+[`dashboards/README.md`](dashboards/README.md): daarin staat per view welke
+entiteiten de apps via MQTT aanmaken, welke bronentiteiten je zelf nodig hebt,
+welke IDs je vervangt en welke extra kaarten vereist zijn. De publieke versies
+bevatten geen lokale theme, achtergrondafbeelding of apparaat-ID's.
+
 ## Benodigde helpers/entities
+
+### Samen met de PV Energy Suite
+
+Deze blueprint blijft zelfstandig en is de enige component die de PV-schakelaar
+bedient. De optionele PV Grid Forecast en verbruiksplanner lezen dezelfde
+prijsdrempel, automatische regeling en handmatige blokkering voor hun advies.
+Phase Guard bewaakt de fasen onafhankelijk. De complete set staat in
+[`PV_ENERGY_SUITE.md`](PV_ENERGY_SUITE.md), met apps in [`apps/`](apps/) en een
+[`apps.yaml`-voorbeeld](examples/appdaemon_apps.yaml.example). Voor de werking
+van deze blueprint zijn die AppDaemon-apps niet vereist.
 
 De blueprint verwacht:
 
